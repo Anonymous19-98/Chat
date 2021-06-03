@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Avatar, ChatEngine } from 'react-chat-engine';
 import { auth } from '../firebase';
 
-import { useAuth, userAuth } from '../contexts/AuthContext';
+import { useAuth} from '../contexts/AuthContext';
 import axios from 'axios';
 
 
@@ -11,6 +11,7 @@ const Chats = () => {
 
     const history = useHistory();
     const {user} = useAuth();  
+
     const [loading, setLoading] = useState(true);
     const  handleLogout = async () => {
         await auth.signOut();
@@ -18,7 +19,7 @@ const Chats = () => {
         history.push('/');
     }
 
-    const getFile = async (url) => {
+    const getFile = async (url) => {    
         const response = await fetch(url);
         const data = await response.blob();
 
@@ -26,13 +27,13 @@ const Chats = () => {
     }
     useEffect(() => {
         if(!user){
-            history.push('/')
+            history.push('/');
             return;
         }
 
         axios.get('https://api.chatengine.io/users/me', {
             headers: {
-                "project-id": "2d0aacc4-35b3-4f0a-8d59-b0f4426bb7e5",
+                "project-id": "7afea354-bf75-4fc1-a0bc-9cc8f3ae2898",
                 "user-name": user.email,
                 "user-secret": user.uid,
 
@@ -44,7 +45,7 @@ const Chats = () => {
         .catch(() =>{
             let formdata = new FormData();
             formdata.append('email', user.email);
-            formdata.append('username', user.displayName);
+            formdata.append('username', user.email);
             formdata.append('secret', user.uid);
 
             getFile(user.photoURL)
@@ -52,11 +53,10 @@ const Chats = () => {
                     formdata.append('avatar', avatar, avatar.name);
                     axios.post('https://api.chatengine.io/users',
                         formdata,
-                        {headers:
-                            {"private-key": "9a2cbb24-5a56-45e0-8bc1-7a8da34674fd"}}
-                        )    
-                        .then(() => setLoading(false))
-                        .catch((error) => console.log(error))   
+                        {headers:{ "private-key": "b2d9bbdb-96cd-4cc2-be6f-d8a1c9d2b1b8" }}
+                    )    
+                    .then(() => setLoading(false))
+                    .catch((error) => console.log(error))   
                 })
         })
     }, [user, history]);
@@ -76,7 +76,7 @@ const Chats = () => {
 
             <ChatEngine 
                 height ="calc(100vh - 66px)"
-                projectID="2d0aacc4-35b3-4f0a-8d59-b0f4426bb7e5"
+                projectID="7afea354-bf75-4fc1-a0bc-9cc8f3ae2898"
                 userName={user.email}
                 userSecret={user.uid}
             />
